@@ -20,7 +20,7 @@ export default function RootLayout({
                     clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
                 >
                     <Header />
-                    {children}
+                    <div>{children}</div>
                 </ThirdwebProvider>
             </body>
         </html>

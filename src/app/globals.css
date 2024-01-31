@@ -11,4 +11,20 @@ body {
     line-height: 1.25rem !important;
     padding: 0.75rem !important;
     min-width: 110px !important;
+    background-color: #0041c2 !important;
+    color: white !important;
+}
+
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
 }

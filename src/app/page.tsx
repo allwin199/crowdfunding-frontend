@@ -1,10 +1,11 @@
 "use client";
-import { ConnectWallet, embeddedWallet } from "@thirdweb-dev/react";
 
 const page = () => {
     return (
-        <div>
-            <ConnectWallet theme="dark" />
+        <div className="max-w-[1240px] w-full h-full mx-auto pt-10">
+            <div className="mt-10">
+                <h1>Home Page</h1>
+            </div>
         </div>
     );
 };

@@ -3,6 +3,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
+import Header from "../components/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
                     activeChain="mumbai"
                     clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
                 >
+                    <Header />
                     {children}
                 </ThirdwebProvider>
             </body>

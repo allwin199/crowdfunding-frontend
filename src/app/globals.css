@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-[#13131a] text-[#ffffff];
+}
+
+.my-custom-button {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+    padding: 0.75rem !important;
+    min-width: 110px !important;
+}

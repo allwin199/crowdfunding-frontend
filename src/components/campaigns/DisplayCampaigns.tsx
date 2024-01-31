@@ -14,7 +14,7 @@ const DisplayCampaigns = () => {
         useContractRead(contract, "getCampaigns");
 
     if (isCampaignsLoading) {
-        return <div className="mt-10">Loading...</div>;
+        return <div className="mt-10">Loading Campaigns...</div>;
     }
 
     if (!isCampaignsLoading) {

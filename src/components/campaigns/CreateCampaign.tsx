@@ -29,10 +29,11 @@ const CreateCampaign = () => {
         "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
     );
 
-    const { mutateAsync: createCampaign, isLoading } = useContractWrite(
-        contract,
-        "createCampaign"
-    );
+    const {
+        mutateAsync: createCampaign,
+        isLoading,
+        isSuccess,
+    } = useContractWrite(contract, "createCampaign");
 
     const [form, setForm] = useState<formFields>(initialFormState);
 
@@ -49,7 +50,7 @@ const CreateCampaign = () => {
         e.preventDefault();
 
         const parseTargetAmount = ethers.utils.parseEther(form.targetAmount);
-        const endDate = new Date(form.endAt).getTime() + 1000; // converting time in seconds
+        const endDate = new Date(form.endAt).getTime() + 100; // converting time in seconds
 
         try {
             const data = await createCampaign({
@@ -61,12 +62,11 @@ const CreateCampaign = () => {
                     form.image,
                 ],
             });
+            setForm(initialFormState);
             console.info("contract call successs", data);
         } catch (err) {
             console.error("contract call failure", err);
         }
-
-        setForm(initialFormState);
     };
 
     if (isLoading) {

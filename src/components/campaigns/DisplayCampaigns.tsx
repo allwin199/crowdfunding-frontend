@@ -17,7 +17,7 @@ type CampaignProps = {
 };
 
 const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
-    console.log("Campaigns", campaigns[0]);
+    // console.log("Campaigns", campaigns[0]);
 
     const campaignCreator = (address: string) => {
         const slice1 = address.slice(0, 6);
@@ -30,8 +30,6 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
         const difference = new Date(deadline).getTime() - Date.now();
         const remainingDays = difference / (1000 * 3600 * 24);
 
-        console.log(remainingDays);
-
         if (+remainingDays.toFixed(0) === -0) {
             return 1;
         }
@@ -40,13 +38,10 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
     };
 
     return (
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-4 gap-10 mt-6">
             {campaigns.map((campaign) => (
-                <Link href="/create-campaign">
-                    <div
-                        key={campaign.id}
-                        className="sm:w-[288px] w-full rounded-[15px] bg-[#3a3a43] cursor-pointer text-sm my-4"
-                    >
+                <Link href={`/campaigns/${campaign.id}`} key={campaign.id}>
+                    <div className="rounded-[15px] bg-[#3a3a43] cursor-pointer text-sm">
                         <img
                             src={campaign.image}
                             alt="fund"
@@ -54,7 +49,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
                         />
                         <div className="p-4">
                             <div className="block">
-                                <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
+                                <h3 className="text-base text-left leading-[26px] truncate">
                                     {campaign.name}
                                 </h3>
                                 <p className="mt-[5px] font-epilogue font-normal text-[#808191] text-left leading-[18px] truncate">

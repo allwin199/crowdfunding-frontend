@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useContract, useContractRead, useAddress } from "@thirdweb-dev/react";
+import { useContract, useContractRead } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import DisplayCampaigns from "./DisplayCampaigns";
+import { deployedContract } from "@/constants/index";
 
 type CampaignTypes = {
     id: number;
@@ -19,11 +20,8 @@ type CampaignTypes = {
 
 const FetchCampaigns = () => {
     const [campaigns, setCampaigns] = useState<CampaignTypes[]>();
-    const address = useAddress();
 
-    const { contract } = useContract(
-        "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
-    );
+    const { contract } = useContract(deployedContract);
 
     const {
         data: allCampaigns,

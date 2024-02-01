@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useContract, useContractRead, useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
+import { deployedContract } from "@/constants/index";
+import { daysLeft } from "@/utils";
 
 type FetchCampaignPropTypes = {
     id: string;
@@ -11,9 +13,7 @@ type FetchCampaignPropTypes = {
 const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
     const [amount, setAmount] = useState(0);
     const [isFunding, setIsFunding] = useState(false);
-    const { contract } = useContract(
-        "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
-    );
+    const { contract } = useContract(deployedContract);
     const address = useAddress();
 
     const {
@@ -35,9 +35,20 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                 value: amountInWei,
             });
             console.info("contract call successs", data);
-            setAmount(0);
             refetch();
-            console.log(campaign);
+            setAmount(0);
+        } catch (err) {
+            console.error("contract call failure", err);
+        } finally {
+            setIsFunding(false);
+        }
+    };
+
+    const withdraw = async () => {
+        try {
+            const data = await contract?.call("withdraw", [id]);
+            console.info("contract call successs", data);
+            refetch();
         } catch (err) {
             console.error("contract call failure", err);
         } finally {
@@ -61,15 +72,7 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
         );
     }
 
-    const daysLeft = (deadline: number) => {
-        const difference = new Date(deadline).getTime() - Date.now();
-        const remainingDays = difference / (1000 * 3600 * 24);
-
-        return Number(Math.abs(+remainingDays).toFixed(0));
-    };
-
     if (isSuccess) {
-        // console.log(campaign);
         return (
             <div>
                 <div className="grid grid-cols-2 gap-4">
@@ -82,7 +85,7 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 my-2">
-                        {daysLeft(Number(campaign.endAt)) > 1 ? (
+                        {daysLeft(Number(campaign.endAt)) < 0 ? (
                             <div className="bg-[#222222] rounded p-6 flex items-center justify-center">
                                 <h2>Campaign Ended</h2>
                             </div>
@@ -121,10 +124,13 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
 
                         {address ? (
                             <div className="col-span-2">
-                                {daysLeft(Number(campaign.endAt)) > 1 ? (
-                                    <div className="flex items-center justify-center bg-[#0041c2] rounded">
+                                {daysLeft(Number(campaign.endAt)) < 0 ? (
+                                    <div className="flex">
                                         {campaign.creator === address ? (
-                                            <button className="text-center py-3">
+                                            <button
+                                                className="text-center py-3 flex-1 bg-[#0041c2] items-center justify-center  rounded"
+                                                onClick={withdraw}
+                                            >
                                                 Withdraw
                                             </button>
                                         ) : (
@@ -152,10 +158,10 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                                     }
                                                 />
                                             </div>
-                                            <div className="flex items-center justify-center bg-[#0041c2] rounded mt-2">
+                                            <div className="flex mt-2">
                                                 <button
                                                     type="submit"
-                                                    className="text-center py-3"
+                                                    className="text-center py-3 flex-1 bg-[#0041c2] items-center justify-center rounded"
                                                 >
                                                     Fund Campaign
                                                 </button>

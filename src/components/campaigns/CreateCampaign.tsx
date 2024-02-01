@@ -5,6 +5,7 @@ import FormField from "../FormField";
 import FormTextArea from "../FormTextArea";
 import { useContract, useContractWrite, useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
+import { deployedContract } from "@/constants/index";
 
 type formFields = {
     name: string;
@@ -25,9 +26,7 @@ const initialFormState = {
 const CreateCampaign = () => {
     const address = useAddress();
 
-    const { contract } = useContract(
-        "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
-    );
+    const { contract } = useContract(deployedContract);
 
     const {
         mutateAsync: createCampaign,
@@ -49,8 +48,18 @@ const CreateCampaign = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const formEndDate = new Date(form.endAt);
         const parseTargetAmount = ethers.utils.parseEther(form.targetAmount);
-        const endDate = new Date(form.endAt).getTime() + 100; // converting time in seconds
+        const endDateInSeconds = Math.floor(formEndDate.getTime() / 1000);
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+
+        let endDate;
+
+        if (endDateInSeconds < currentTimeInSeconds) {
+            endDate = currentTimeInSeconds + 100;
+        } else {
+            endDate = endDateInSeconds + 100;
+        }
 
         try {
             const data = await createCampaign({

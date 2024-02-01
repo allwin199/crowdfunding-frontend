@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { daysLeft } from "@/utils";
 
 type CampaignTypes = {
     id: number;
@@ -26,12 +27,15 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
         return slice1 + "..." + slice2;
     };
 
-    const daysLeft = (deadline: number) => {
-        const difference = new Date(deadline).getTime() - Date.now();
-        const remainingDays = difference / (1000 * 3600 * 24);
+    // const daysLeft = (deadline: number) => {
+    //     const endAt = deadline;
+    //     const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+    //     const differenceInSeconds = endAt - currentTimeInSeconds;
+    //     const daysLeft = Math.ceil(differenceInSeconds / 86400);
+    //     console.log(daysLeft);
 
-        return Number(Math.abs(+remainingDays).toFixed(0));
-    };
+    //     return daysLeft;
+    // };
 
     return (
         <div className="grid grid-cols-4 gap-10 my-6">
@@ -62,7 +66,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
                                     </p>
                                 </div>
                                 <div className="flex flex-col">
-                                    {daysLeft(campaign.endAt) > 1 ? (
+                                    {daysLeft(campaign.endAt) < 0 ? (
                                         <p className="text-sm text-gray-400">
                                             Ended
                                         </p>

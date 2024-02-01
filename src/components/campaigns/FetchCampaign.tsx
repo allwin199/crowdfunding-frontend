@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useContract, useContractRead, useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 
@@ -8,6 +9,8 @@ type FetchCampaignPropTypes = {
 };
 
 const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
+    const [amount, setAmount] = useState(0);
+    const [isFunding, setIsFunding] = useState(false);
     const { contract } = useContract(
         "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
     );
@@ -17,12 +20,43 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
         data: campaign,
         isLoading,
         isSuccess,
+        refetch,
     } = useContractRead(contract, "getCampaign", [id]);
+
+    const fundTheCampaign = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (amount == 0) {
+            alert("Cannot fund with 0");
+        }
+        setIsFunding(true);
+        const amountInWei = ethers.utils.parseEther(amount.toString());
+        try {
+            const data = await contract?.call("fundCampaign", [id], {
+                value: amountInWei,
+            });
+            console.info("contract call successs", data);
+            setAmount(0);
+            refetch();
+            console.log(campaign);
+        } catch (err) {
+            console.error("contract call failure", err);
+        } finally {
+            setIsFunding(false);
+        }
+    };
 
     if (isLoading) {
         return (
             <div className="mt-10">
                 <h1>Campaign Loading ...</h1>
+            </div>
+        );
+    }
+
+    if (isFunding) {
+        return (
+            <div className="mt-10">
+                <h1>Funding the Campaign ...</h1>
             </div>
         );
     }
@@ -53,14 +87,14 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                 <h2>Campaign Ended</h2>
                             </div>
                         ) : (
-                            <div className="bg-[#222222] rounded p-6">
+                            <div className="bg-[#222222] rounded p-4">
                                 Days Left
                                 <p className="text-sm mt-4">
                                     {daysLeft(Number(campaign.endAt))}
                                 </p>
                             </div>
                         )}
-                        <div className="bg-[#222222] rounded p-6">
+                        <div className="bg-[#222222] rounded p-4">
                             Target Amount
                             <p className="text-sm mt-4">
                                 {ethers.utils.formatEther(
@@ -69,7 +103,7 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                 ETH
                             </p>
                         </div>
-                        <div className="bg-[#222222] rounded p-6">
+                        <div className="bg-[#222222] rounded p-4">
                             Amount Collected
                             <p className="text-sm mt-4">
                                 {ethers.utils.formatEther(
@@ -78,7 +112,7 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                 ETH
                             </p>
                         </div>
-                        <div className="bg-[#222222] rounded p-6">
+                        <div className="bg-[#222222] rounded p-4">
                             Total Funders
                             <p className="text-sm mt-4">
                                 {campaign.funders.length}
@@ -100,10 +134,33 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                         )}
                                     </div>
                                 ) : (
-                                    <div className="flex items-center justify-center bg-[#0041c2] rounded">
-                                        <button className="text-center py-3">
-                                            Fund Campaign
-                                        </button>
+                                    <div>
+                                        <form onSubmit={fundTheCampaign}>
+                                            <div className="flex items-center justify-center rounded">
+                                                <input
+                                                    required
+                                                    type="number"
+                                                    className="flex-1 p-2 rounded bg-black"
+                                                    placeholder="0.01 ETH"
+                                                    value={amount}
+                                                    onChange={(e) =>
+                                                        setAmount(
+                                                            Number(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-center bg-[#0041c2] rounded mt-2">
+                                                <button
+                                                    type="submit"
+                                                    className="text-center py-3"
+                                                >
+                                                    Fund Campaign
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
                                 )}
                             </div>
@@ -130,11 +187,13 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                     {campaign.funders.length > 0 ? (
                         <div className="mt-6">
                             <h4 className="text-xl">Funders</h4>
-                            <span className="text-sm text-gray-400">
-                                {/* {campaign.funders.map((funder) => (
-                                    <div key={funder}>{funder}</div>
-                                ))} */}
-                            </span>
+                            <div className="text-sm text-gray-400">
+                                {campaign.funders.map((funder: string) => (
+                                    <div key={funder} className="py-1">
+                                        {funder}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ) : null}
                 </div>

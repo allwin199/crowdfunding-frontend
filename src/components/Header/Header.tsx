@@ -21,6 +21,16 @@ export default function Header() {
                         Campaigns
                     </Link>
                     <Link
+                        href="/my-campaigns"
+                        className={`px-4 py-2 transition hover:text-primary ${
+                            pathname === "/my-campaigns"
+                                ? "text-white"
+                                : "text-zinc-400"
+                        }`}
+                    >
+                        My Campaigns
+                    </Link>
+                    <Link
                         href="/create-campaign"
                         className={`pl-4 py-2 pr-8 transition hover:text-primary ${
                             pathname === "/create-campaign"

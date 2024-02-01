@@ -38,7 +38,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
     };
 
     return (
-        <div className="grid grid-cols-4 gap-10 mt-6">
+        <div className="grid grid-cols-4 gap-10 my-6">
             {campaigns.map((campaign) => (
                 <Link href={`/campaigns/${campaign.id}`} key={campaign.id}>
                     <div className="rounded-[15px] bg-[#3a3a43] cursor-pointer text-sm">

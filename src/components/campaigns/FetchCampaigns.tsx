@@ -60,10 +60,11 @@ const FetchCampaigns = () => {
     return (
         <div className="mt-10">
             {campaigns && campaigns?.length > 0 ? (
-                <h1 className="text-[18px] text-white text-left">
-                    All Campaigns
+                <>
+                    <h1 className="text-[18px]">All Campaigns</h1>
+
                     <DisplayCampaigns campaigns={campaigns} />
-                </h1>
+                </>
             ) : (
                 <h1 className="text-[18px] text-white text-left">
                     No Campaigns Found. Try adding a new campaign.

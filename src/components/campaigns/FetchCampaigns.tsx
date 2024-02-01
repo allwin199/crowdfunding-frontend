@@ -34,7 +34,7 @@ const FetchCampaigns = () => {
     useEffect(() => {
         if (isSuccess) {
             const campaigns = allCampaigns.map((campaign: CampaignTypes) => ({
-                id: Number(ethers.utils.formatEther(campaign.id.toString())),
+                id: campaign.id,
                 creator: campaign.creator,
                 name: campaign.name,
                 description: campaign.description,

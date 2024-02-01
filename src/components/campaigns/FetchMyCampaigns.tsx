@@ -41,9 +41,7 @@ const FetchMyCampaigns = () => {
                 );
                 const campaigns = myCampaigns.map(
                     (campaign: CampaignTypes) => ({
-                        id: Number(
-                            ethers.utils.formatEther(campaign.id.toString())
-                        ),
+                        id: campaign.id,
                         creator: campaign.creator,
                         name: campaign.name,
                         description: campaign.description,

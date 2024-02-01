@@ -27,16 +27,6 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
         return slice1 + "..." + slice2;
     };
 
-    // const daysLeft = (deadline: number) => {
-    //     const endAt = deadline;
-    //     const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-    //     const differenceInSeconds = endAt - currentTimeInSeconds;
-    //     const daysLeft = Math.ceil(differenceInSeconds / 86400);
-    //     console.log(daysLeft);
-
-    //     return daysLeft;
-    // };
-
     return (
         <div className="grid grid-cols-4 gap-10 my-6">
             {campaigns.map((campaign) => (

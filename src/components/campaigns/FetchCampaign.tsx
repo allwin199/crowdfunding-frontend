@@ -13,6 +13,7 @@ type FetchCampaignPropTypes = {
 const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
     const [amount, setAmount] = useState(0);
     const [isFunding, setIsFunding] = useState(false);
+    const [iswithdaw, SetIsWithdraw] = useState(false);
     const { contract } = useContract(deployedContract);
     const address = useAddress();
 
@@ -27,24 +28,26 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
         e.preventDefault();
         if (amount == 0) {
             alert("Cannot fund with 0");
-        }
-        setIsFunding(true);
-        const amountInWei = ethers.utils.parseEther(amount.toString());
-        try {
-            const data = await contract?.call("fundCampaign", [id], {
-                value: amountInWei,
-            });
-            console.info("contract call successs", data);
-            refetch();
-            setAmount(0);
-        } catch (err) {
-            console.error("contract call failure", err);
-        } finally {
-            setIsFunding(false);
+        } else {
+            setIsFunding(true);
+            const amountInWei = ethers.utils.parseEther(amount.toString());
+            try {
+                const data = await contract?.call("fundCampaign", [id], {
+                    value: amountInWei,
+                });
+                console.info("contract call successs", data);
+                refetch();
+                setAmount(0);
+            } catch (err) {
+                console.error("contract call failure", err);
+            } finally {
+                setIsFunding(false);
+            }
         }
     };
 
     const withdraw = async () => {
+        SetIsWithdraw(true);
         try {
             const data = await contract?.call("withdraw", [id]);
             console.info("contract call successs", data);
@@ -52,22 +55,18 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
         } catch (err) {
             console.error("contract call failure", err);
         } finally {
-            setIsFunding(false);
+            SetIsWithdraw(false);
         }
     };
 
     if (isLoading) {
         return (
-            <div className="mt-10">
-                <h1>Campaign Loading ...</h1>
-            </div>
-        );
-    }
-
-    if (isFunding) {
-        return (
-            <div className="mt-10">
-                <h1>Funding the Campaign ...</h1>
+            <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4 my-10">
+                <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
+                    <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">
+                        Campaign Loading...
+                    </h1>
+                </div>
             </div>
         );
     }
@@ -124,51 +123,69 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
 
                         {address ? (
                             <div className="col-span-2">
-                                {daysLeft(Number(campaign.endAt)) < 0 ? (
-                                    <div className="flex">
-                                        {campaign.creator === address ? (
-                                            <button
-                                                className="text-center py-3 flex-1 bg-[#0041c2] items-center justify-center  rounded"
-                                                onClick={withdraw}
-                                            >
-                                                Withdraw
-                                            </button>
-                                        ) : (
-                                            <h1 className="py-3 text-gray-500">
-                                                Campaign Ended
-                                            </h1>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <form onSubmit={fundTheCampaign}>
-                                            <div className="flex items-center justify-center rounded">
-                                                <input
-                                                    required
-                                                    type="number"
-                                                    className="flex-1 p-2 rounded bg-black"
-                                                    placeholder="0.01 ETH"
-                                                    value={amount}
-                                                    onChange={(e) =>
-                                                        setAmount(
-                                                            Number(
-                                                                e.target.value
+                                <div className="flex mt-2">
+                                    {campaign.creator === address ? (
+                                        <div className="flex flex-1">
+                                            {!iswithdaw &&
+                                            campaign.claimedByOwner ? (
+                                                <div className="text-center py-3 flex-1 bg-gray-500 items-center justify-center rounded">
+                                                    Claimed By Owner
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-1">
+                                                    {iswithdaw ? (
+                                                        <div className="text-center py-3 flex-1 bg-gray-500 items-center justify-center rounded">
+                                                            Withdrawing...
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            className="text-center py-3 flex-1 bg-red-700 items-center justify-center  rounded"
+                                                            onClick={withdraw}
+                                                        >
+                                                            Withdraw
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="flex-1">
+                                            <form onSubmit={fundTheCampaign}>
+                                                <div className="flex items-center justify-center rounded">
+                                                    <input
+                                                        required
+                                                        type="number"
+                                                        className="flex-1 p-2 rounded bg-black"
+                                                        placeholder="0.01 ETH"
+                                                        value={amount}
+                                                        onChange={(e) =>
+                                                            setAmount(
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
                                                             )
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="flex mt-2">
-                                                <button
-                                                    type="submit"
-                                                    className="text-center py-3 flex-1 bg-[#0041c2] items-center justify-center rounded"
-                                                >
-                                                    Fund Campaign
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                )}
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="flex mt-2">
+                                                    {isFunding ? (
+                                                        <div className="text-center py-3 flex-1 bg-gray-500 items-center justify-center rounded">
+                                                            Funding Campaign...
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            type="submit"
+                                                            className="text-center py-3 flex-1 bg-[#0041c2] items-center justify-center rounded"
+                                                        >
+                                                            Fund Campaign
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </form>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <h1 className="text-xl py-3">

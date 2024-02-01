@@ -6,6 +6,7 @@ import FormTextArea from "../FormTextArea";
 import { useContract, useContractWrite, useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import { deployedContract } from "@/constants/index";
+import { useRouter } from "next/navigation";
 
 type formFields = {
     name: string;
@@ -25,6 +26,7 @@ const initialFormState = {
 
 const CreateCampaign = () => {
     const address = useAddress();
+    const router = useRouter();
 
     const { contract } = useContract(deployedContract);
 
@@ -48,18 +50,20 @@ const CreateCampaign = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const formEndDate = new Date(form.endAt);
+        // const formEndDate = new Date(form.endAt);
         const parseTargetAmount = ethers.utils.parseEther(form.targetAmount);
-        const endDateInSeconds = Math.floor(formEndDate.getTime() / 1000);
+        // const endDateInSeconds = Math.floor(formEndDate.getTime() / 1000);
         const currentTimeInSeconds = Math.floor(Date.now() / 1000);
 
         let endDate;
 
-        if (endDateInSeconds < currentTimeInSeconds) {
-            endDate = currentTimeInSeconds + 100;
-        } else {
-            endDate = endDateInSeconds + 100;
-        }
+        // if (endDateInSeconds < currentTimeInSeconds) {
+        //     endDate = currentTimeInSeconds + 100;
+        // } else {
+        //     endDate = endDateInSeconds + 100;
+        // }
+
+        endDate = currentTimeInSeconds + 30;
 
         try {
             const data = await createCampaign({
@@ -72,6 +76,7 @@ const CreateCampaign = () => {
                 ],
             });
             setForm(initialFormState);
+            router.push("/campaigns");
             console.info("contract call successs", data);
         } catch (err) {
             console.error("contract call failure", err);

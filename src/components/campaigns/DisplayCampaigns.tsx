@@ -30,11 +30,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
         const difference = new Date(deadline).getTime() - Date.now();
         const remainingDays = difference / (1000 * 3600 * 24);
 
-        if (+remainingDays.toFixed(0) === -0) {
-            return 1;
-        }
-
-        return remainingDays.toFixed(0);
+        return Number(Math.abs(+remainingDays).toFixed(0));
     };
 
     return (
@@ -66,8 +62,10 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
                                     </p>
                                 </div>
                                 <div className="flex flex-col">
-                                    {daysLeft(campaign.endAt) == "-1" ? (
-                                        <></>
+                                    {daysLeft(campaign.endAt) > 1 ? (
+                                        <p className="text-sm text-gray-400">
+                                            Ended
+                                        </p>
                                     ) : (
                                         <>
                                             <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">

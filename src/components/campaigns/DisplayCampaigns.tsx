@@ -1,29 +1,102 @@
-"use client";
+import Link from "next/link";
 
-import { useContract, useContractRead, useAddress } from "@thirdweb-dev/react";
-import { ethers } from "ethers";
+type CampaignTypes = {
+    id: number;
+    creator: string;
+    name: string;
+    description: string;
+    targetAmount: string;
+    endAt: number;
+    amountCollected: string;
+    image: string;
+    claimedByOwner: boolean;
+};
 
-const DisplayCampaigns = () => {
-    const address = useAddress();
+type CampaignProps = {
+    campaigns: CampaignTypes[];
+};
 
-    const { contract } = useContract(
-        "0xb3Ee0a7A4DB0aC498eeE1510708D06C73d8c42f0"
-    );
+const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
+    console.log("Campaigns", campaigns[0]);
 
-    const { data: allCampaigns, isLoading: isCampaignsLoading } =
-        useContractRead(contract, "getCampaigns");
+    const campaignCreator = (address: string) => {
+        const slice1 = address.slice(0, 6);
+        const slice2 = address.slice(-4);
 
-    if (isCampaignsLoading) {
-        return <div className="mt-10">Loading Campaigns...</div>;
-    }
+        return slice1 + "..." + slice2;
+    };
 
-    if (!isCampaignsLoading) {
-        console.log("Data", allCampaigns);
-    }
+    const daysLeft = (deadline: number) => {
+        const difference = new Date(deadline).getTime() - Date.now();
+        const remainingDays = difference / (1000 * 3600 * 24);
+
+        console.log(remainingDays);
+
+        if (+remainingDays.toFixed(0) === -0) {
+            return 1;
+        }
+
+        return remainingDays.toFixed(0);
+    };
 
     return (
-        <div className="mt-10">
-            <h1 className="text-[18px] text-white text-left">All Campaigns</h1>
+        <div className="grid grid-cols-4">
+            {campaigns.map((campaign) => (
+                <Link href="/create-campaign">
+                    <div
+                        key={campaign.id}
+                        className="sm:w-[288px] w-full rounded-[15px] bg-[#3a3a43] cursor-pointer text-sm my-4"
+                    >
+                        <img
+                            src={campaign.image}
+                            alt="fund"
+                            className="w-full h-[158px] object-cover rounded-[15px]"
+                        />
+                        <div className="p-4">
+                            <div className="block">
+                                <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
+                                    {campaign.name}
+                                </h3>
+                                <p className="mt-[5px] font-epilogue font-normal text-[#808191] text-left leading-[18px] truncate">
+                                    {campaign.description}
+                                </p>
+                            </div>
+                            <div className="flex justify-between flex-wrap mt-[15px] gap-2">
+                                <div className="flex flex-col">
+                                    <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
+                                        {campaign.amountCollected}
+                                    </h4>
+                                    <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
+                                        Raised of {campaign.targetAmount} ETH
+                                    </p>
+                                </div>
+                                <div className="flex flex-col">
+                                    {daysLeft(campaign.endAt) == "-1" ? (
+                                        <></>
+                                    ) : (
+                                        <>
+                                            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
+                                                {daysLeft(campaign.endAt)}
+                                            </h4>
+                                            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
+                                                Days Left
+                                            </p>{" "}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex items-center mt-[20px] gap-[12px]">
+                                <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
+                                    Create by{" "}
+                                    <span className="text-[#b2b3bd]">
+                                        {campaignCreator(campaign.creator)}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
+            ))}
         </div>
     );
 };

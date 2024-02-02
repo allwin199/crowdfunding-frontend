@@ -9,6 +9,7 @@ type CampaignTypes = {
     targetAmount: string;
     endAt: number;
     amountCollected: string;
+    amountClaimed: string;
     image: string;
     claimedByOwner: boolean;
 };
@@ -49,7 +50,9 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
                             <div className="flex justify-between flex-wrap mt-[15px] gap-2">
                                 <div className="flex flex-col">
                                     <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-                                        {campaign.amountCollected}
+                                        {campaign.claimedByOwner
+                                            ? campaign.amountClaimed
+                                            : campaign.amountCollected}
                                     </h4>
                                     <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
                                         Raised of {campaign.targetAmount} ETH

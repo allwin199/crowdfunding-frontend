@@ -105,15 +105,27 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                                 ETH
                             </p>
                         </div>
-                        <div className="bg-[#222222] rounded p-4">
-                            Amount Collected
-                            <p className="text-sm mt-4">
-                                {ethers.utils.formatEther(
-                                    campaign.amountCollected.toString()
-                                )}{" "}
-                                ETH
-                            </p>
-                        </div>
+                        {campaign.claimedByOwner ? (
+                            <div className="bg-[#222222] rounded p-4">
+                                Amount Claimed
+                                <p className="text-sm mt-4">
+                                    {ethers.utils.formatEther(
+                                        campaign.amountWithdrawnByOwner.toString()
+                                    )}{" "}
+                                    ETH
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="bg-[#222222] rounded p-4">
+                                Amount Collected
+                                <p className="text-sm mt-4">
+                                    {ethers.utils.formatEther(
+                                        campaign.amountCollected.toString()
+                                    )}{" "}
+                                    ETH
+                                </p>
+                            </div>
+                        )}
                         <div className="bg-[#222222] rounded p-4">
                             Total Funders
                             <p className="text-sm mt-4">
@@ -196,20 +208,20 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
                 </div>
                 <div className="mt-6">
                     <div>
-                        <h4 className="text-xl">Creator</h4>
+                        <h4 className="text-xl text-gray-300">Creator</h4>
                         <span className="text-sm text-gray-400">
                             {campaign.creator}
                         </span>
                     </div>
                     <div className="mt-6">
-                        <h4 className="text-xl">Description</h4>
+                        <h4 className="text-xl text-gray-300">Description</h4>
                         <span className="text-sm text-gray-400">
                             {campaign.description}
                         </span>
                     </div>
                     {campaign.funders.length > 0 ? (
                         <div className="mt-6">
-                            <h4 className="text-xl">Funders</h4>
+                            <h4 className="text-xl text-gray-300">Funders</h4>
                             <div className="text-sm text-gray-400">
                                 {campaign.funders.map((funder: string) => (
                                     <div key={funder} className="py-1">

@@ -14,6 +14,7 @@ type CampaignTypes = {
     targetAmount: string;
     endAt: number;
     amountCollected: string;
+    amountWithdrawnByOwner: string;
     image: string;
     claimedByOwner: boolean;
 };
@@ -50,6 +51,9 @@ const FetchMyCampaigns = () => {
                         endAt: Number(campaign.endAt),
                         amountCollected: ethers.utils.formatEther(
                             campaign.amountCollected.toString()
+                        ),
+                        amountWithdrawnByOwner: ethers.utils.formatEther(
+                            campaign.amountWithdrawnByOwner.toString()
                         ),
                         image: campaign.image,
                         claimedByOwner: campaign.claimedByOwner,

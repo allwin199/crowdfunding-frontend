@@ -76,6 +76,7 @@ const FetchCampaign = ({ id }: FetchCampaignPropTypes) => {
             <div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
+                        {/* eslint-disable @next/next/no-img-element */}
                         <img
                             src={campaign.image}
                             alt="campaign"

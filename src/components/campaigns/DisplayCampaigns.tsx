@@ -33,6 +33,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
             {campaigns.map((campaign) => (
                 <Link href={`/campaigns/${campaign.id}`} key={campaign.id}>
                     <div className="rounded-[15px] bg-[#3a3a43] cursor-pointer text-sm">
+                        {/* eslint-disable @next/next/no-img-element */}
                         <img
                             src={campaign.image}
                             alt="fund"

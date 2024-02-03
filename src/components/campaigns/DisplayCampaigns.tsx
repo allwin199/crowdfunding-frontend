@@ -78,7 +78,7 @@ const DisplayCampaigns = ({ campaigns }: CampaignProps) => {
                             </div>
                             <div className="flex items-center mt-[20px] gap-[12px]">
                                 <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
-                                    Create by{" "}
+                                    Created by{" "}
                                     <span className="text-[#b2b3bd]">
                                         {campaignCreator(campaign.creator)}
                                     </span>
